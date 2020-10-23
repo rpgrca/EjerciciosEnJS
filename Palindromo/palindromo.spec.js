@@ -1,6 +1,6 @@
 const esPalindromo = (input) => {
     if (input.length < 1) return false
-    return input == input.split("").reverse().join("")
+    return input.toUpperCase() == input.split("").reverse().join("").toUpperCase()
 }
 
 describe('Ejercicio de Palindromo', () => {
@@ -22,5 +22,10 @@ describe('Ejercicio de Palindromo', () => {
     test('Palabra de mas de una letra que no es palindromo devuelve false', () => {
         const result = esPalindromo('ahora')
         expect(result).toBe(false)
+    })
+
+    test('Palindromo con mayusculas y minúsculas devuelve true', () => {
+        const result = esPalindromo('Neuquen')
+        expect(result).toBe(true)
     })
 })
