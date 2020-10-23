@@ -27,24 +27,16 @@ jobs:
     - name: Install Codecov
       run: npm install -g codecov
 
-    - name: Setup CI
+    - name: Run CI for Anaconda
       working-directory: Anaconda
       run: npm ci
-    - name: Build Anaconda
-      working-directory: Anaconda
       run: npm run build --if-present
-    - name: Test Anaconda
-      working-directory: Anaconda
       run: npm test
 
-    - name: Setup CI
+    - name: Run CI for Palindromo
       working-directory: Palindromo
       run: npm ci
-    - name: Build Palindromo
-      working-directory: Palindromo
       run: npm run build --if-present
-    - name: Test Palindromo
-      working-directory: Palindromo
       run: npm test
 
     - name: Upload code coverage
