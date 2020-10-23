@@ -1,7 +1,4 @@
-const esPalindromo = (input) => {
-    if (input.length < 1) return false
-    return input.toUpperCase() == input.split("").reverse().join("").toUpperCase()
-}
+import { esPalindromo } from './palindromo'
 
 describe('Ejercicio de Palindromo', () => {
     test('Palabra vacia devuelve falso', () => {
