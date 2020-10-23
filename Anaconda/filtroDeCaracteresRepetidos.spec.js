@@ -1,6 +1,4 @@
-const filtroDeCaracteresRepetidos = (input) => {
-    return [...new Set(input)].join('')
-}
+import { filtroDeCaracteresRepetidos } from './filtroDeCaracteresRepetidos'
 
 describe('Ejercicio de Anaconda', () => {
     test('Palabra vacia devuelve vacio', () => {
