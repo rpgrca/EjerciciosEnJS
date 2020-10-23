@@ -24,6 +24,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install Codecov
+      run: npm install -g codecov
     - name: Setup CI
       working-directory: Anaconda
       run: npm ci
@@ -33,3 +35,6 @@ jobs:
     - name: Test Anaconda
       working-directory: Anaconda
       run: npm test
+
+    - name: Upload code coverage
+      run: codecov
