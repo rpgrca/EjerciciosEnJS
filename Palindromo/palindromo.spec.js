@@ -1,8 +1,6 @@
 const esPalindromo = (input) => {
-    if (input.length >= 1)
-        return true;
-
-    return false;
+    if (input.length < 1) return false
+    return input == input.split("").reverse().join("")
 }
 
 describe('Ejercicio de Palindromo', () => {
@@ -19,5 +17,10 @@ describe('Ejercicio de Palindromo', () => {
     test('Palabra de mas de una letra que es palindromo devuelve true', () => {
         const result = esPalindromo('neuquen')
         expect(result).toBe(true)
+    })
+
+    test('Palabra de mas de una letra que no es palindromo devuelve false', () => {
+        const result = esPalindromo('ahora')
+        expect(result).toBe(false)
     })
 })
