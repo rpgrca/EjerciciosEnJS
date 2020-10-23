@@ -17,4 +17,14 @@ describe('Ejercicio de Anaconda', () => {
         const result = filtroDeCaracteresRepetidos('anaconda')
         expect(result).toBe('ancod')
     })
+
+    test.each`
+        input           | expected
+        ${'murcielago'} | ${'murcielago'}
+        ${'oso'}        | ${'os'}
+        ${'hospital'}   | ${'hospital'}
+        ${'alabama'}    | ${'albm'}
+    `('Palabra $input es convertida a $expected', ({ input, expected }) => {
+        expect(filtroDeCaracteresRepetidos(input)).toBe(expected)
+    })
 })
