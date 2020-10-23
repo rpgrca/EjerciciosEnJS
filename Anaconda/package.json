@@ -1,0 +1,14 @@
+{
+  "name": "anaconda",
+  "version": "1.0.0",
+  "description": "## Actividad 1. Crear una clase que elimine los caracteres repetidos de una palabra (\"anaconda\" → \"ancod\")",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.6.1"
+  }
+}
