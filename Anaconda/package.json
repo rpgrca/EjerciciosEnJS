@@ -21,7 +21,7 @@
     "collectCoverageFrom": [
       "*.{js,jsx}",
       "!**/node_modules/**",
-	  "!babel.config.js"
+      "!babel.config.js"
     ]
   }
 }
