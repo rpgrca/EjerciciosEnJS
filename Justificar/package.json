@@ -1,0 +1,27 @@
+{
+  "name": "justificar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
+    "babel-jest": "^26.6.1",
+    "jest": "^26.6.3"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "verbose": true,
+    "collectCoverageFrom": [
+      "*.{js,jsx}",
+      "!**/node_modules/**",
+      "!babel.config.js"
+    ]
+  }
+}
