@@ -11,8 +11,13 @@ describe('Ejercicio de Justificacion', () => {
         expect(result).toStrictEqual([ 'cadena' ])
     })
 
-    test('Longitud de cadena mayor a longitud y palabra termina justo justifica primer parte', () => {
+    test('Longitud de cadena mayor a longitud y palabra termina justo solamente debe dividir', () => {
         const result = justificar('Esta es una cadena de muchos caracteres', 21)
         expect(result).toStrictEqual([ 'Esta es una cadena de', 'muchos caracteres' ])
+    })
+
+    test('Con multiples lineas que terminan correctamente solamente debe dividir', () => {
+        const result = justificar('Esta otra cadena es bastante parecida a la cadena anterior pero con tres lineas bien escritas', 39)
+        expect(result).toStrictEqual( [ 'Esta otra cadena es bastante parecida a', 'la cadena anterior pero con tres lineas', 'bien escritas'])
     })
 })
