@@ -1,4 +1,4 @@
-const makeKeyFrom = (word) => word.split('').sort().join()
+const makeKeyFrom = (word) => word.split('').sort().join('')
 
 export const isAnagramOf = (firstWord, secondWord) => makeKeyFrom(firstWord) == makeKeyFrom(secondWord)
 
