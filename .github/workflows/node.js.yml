@@ -29,21 +29,24 @@ jobs:
 
     - name: Run CI for Anaconda
       working-directory: Anaconda
-      run: npm ci
-      run: npm run build --if-present
-      run: npm test
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test
 
     - name: Run CI for Palindromo
       working-directory: Palindromo
-      run: npm ci
-      run: npm run build --if-present
-      run: npm test
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test
 
     - name: Run CI for SortingAnagrams
       working-directory: SortingAnagrams
-      run: npm ci
-      run: npm run build --if-present
-      run: npm test
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test
 
     - name: Upload code coverage
       run: bash <(curl -s https://codecov.io/bash)
