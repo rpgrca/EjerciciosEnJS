@@ -21,6 +21,12 @@ describe('Ejercicio de Eliminacion', () => {
     test('Si no hay anagramas en la lista retorna la misma lista', () => {
         const input = ['code', 'frame']
         const result = removeAnagramsFrom(input)
-        expect(result).toBe(input)
+        expect(result).toStrictEqual(input)
+    })
+
+    test('Si hay anagrama en la lista retornar primero', () => {
+        const input = ['code', 'doce', 'ecod']
+        const result = removeAnagramsFrom(input)
+        expect(result).toStrictEqual(['code'])
     })
 })
