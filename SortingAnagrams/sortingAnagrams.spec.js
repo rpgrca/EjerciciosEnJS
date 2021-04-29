@@ -1,4 +1,4 @@
-import { isAnagramOf, removeAnagramsFrom } from './sortingAnagrams'
+import { isAnagramOf, removeAnagramsFrom, sortUniqueAnagramsFrom } from './sortingAnagrams'
 
 describe('Ejercicio de Anagrama', () => {
     test('Palabras vacias devuelve verdadero', () => {
@@ -28,5 +28,13 @@ describe('Ejercicio de Eliminacion', () => {
         const input = ['code', 'doce', 'ecod']
         const result = removeAnagramsFrom(input)
         expect(result).toStrictEqual(['code'])
+    })
+})
+
+describe('Ejercicio de Ordenamiento', () => {
+    test('Ordenar los anagramas unicos obtenidos', () => {
+        const input = ['code', 'doce', 'ecod', 'framer', 'frame']
+        const result = sortUniqueAnagramsFrom(input)
+        expect(result).toStrictEqual(['code', 'frame', 'framer'])
     })
 })
