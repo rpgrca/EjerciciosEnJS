@@ -1,5 +1,5 @@
 {
-  "name": "sortingAnagrams",
+  "name": "sortingUniqueAnagrams",
   "version": "1.0.0",
   "description": "## Descripción Un anagrama es una palabra que se forma con las letras de otra palabra.",
   "main": "index.js",

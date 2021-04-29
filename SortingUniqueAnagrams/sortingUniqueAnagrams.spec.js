@@ -1,4 +1,4 @@
-import { isAnagramOf, removeAnagramsFrom, sortUniqueAnagramsFrom } from './sortingAnagrams'
+import { isAnagramOf, removeAnagramsFrom, sortUniqueAnagramsFrom } from './sortingUniqueAnagrams'
 
 describe('Ejercicio de Anagrama', () => {
     test('Palabras vacias devuelve verdadero', () => {

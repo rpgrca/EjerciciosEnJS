@@ -41,8 +41,8 @@ jobs:
            npm run build --if-present
            npm test
 
-    - name: Run CI for SortingAnagrams
-      working-directory: SortingAnagrams
+    - name: Run CI for SortingUniqueAnagrams
+      working-directory: SortingUniqueAnagrams
       run: |
            npm ci
            npm run build --if-present
