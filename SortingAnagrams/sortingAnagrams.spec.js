@@ -5,4 +5,9 @@ describe('Ejercicio de Anagrama', () => {
         const result = isAnagramOf('', '')
         expect(result).toBe(true)
     })
+
+    test('Palabras distintas devuelve falso', () => {
+        const result = isAnagramOf('hola', 'chau')
+        expect(result).toBe(false)
+    })
 })
