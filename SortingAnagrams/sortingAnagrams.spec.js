@@ -10,4 +10,9 @@ describe('Ejercicio de Anagrama', () => {
         const result = isAnagramOf('hola', 'chau')
         expect(result).toBe(false)
     })
+
+    test('Anagramas devuelve verdadero', () => {
+        const result = isAnagramOf('code', 'doce')
+        expect(result).toBe(true)
+    })
 })
