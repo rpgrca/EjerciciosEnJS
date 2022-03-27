@@ -48,15 +48,21 @@ bool process_recv(char *buffer, int s) {
 	while (index < length) {
 		if (strncmp(&buffer[index], "\r\n", 2) == 0) {
 			index += 2;
+			continue;
 		}
 
 		if (strncmp(&buffer[index], "coord", 5) == 0) {
 			send_coordinates_to(s);
 			index += 5;
+			continue;
 		}
 
 		if (strncmp(&buffer[index], "quit", 4) == 0) {
 			return false;
+		}
+
+		while (index < length && buffer[index] != '\r') {
+			index++;
 		}
 	}
 
