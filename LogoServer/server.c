@@ -15,7 +15,7 @@
 #define TIMEOUT 15
 
 static int _x = 15, _y = 15;
-static char map[30][30];
+static char _map[30][30];
 
 bool send_handshake(int s) {
     char *handshake_message = "hello\r\n";
@@ -28,16 +28,11 @@ bool send_handshake(int s) {
 	return true;
 }
 
-bool send_coordinates_to(int s) {
+void build_coordinates(char *response) {
 	char buffer[1024];
 	snprintf(buffer, sizeof(buffer), "(%d,%d)\r\n", _x, _y);
 
-	if (send(s, buffer, strlen(buffer), 0) == -1) {
-		perror("send() failed");
-		return false;
-	}
-
-	return true;
+	strcat(response, buffer);
 }
 
 bool process_recv(char *buffer, int s) {
@@ -45,20 +40,30 @@ bool process_recv(char *buffer, int s) {
 
 	int length = strlen(buffer);
 	int index = 0;
+	bool must_quit = false;
+	char response[10240];
+
+	memset(response, 0, sizeof(response));
 	while (index < length) {
+		if (buffer[index] == ' ') {
+			index++;
+			continue;
+		}
+
 		if (strncmp(&buffer[index], "\r\n", 2) == 0) {
 			index += 2;
 			continue;
 		}
 
 		if (strncmp(&buffer[index], "coord", 5) == 0) {
-			send_coordinates_to(s);
+			build_coordinates(response);
 			index += 5;
 			continue;
 		}
 
 		if (strncmp(&buffer[index], "quit", 4) == 0) {
-			return false;
+			must_quit = true;
+			break;
 		}
 
 		while (index < length && buffer[index] != '\r') {
@@ -66,15 +71,23 @@ bool process_recv(char *buffer, int s) {
 		}
 	}
 
-	return true;
+	if (send(s, response, strlen(response), 0) == -1) {
+		perror("send() failed");
+		return false;
+	}
+
+	return !must_quit;
+}
+
+static void reset_map() {
+	_x = _y = 15;
+	memset(_map, 0, sizeof(_map));
 }
 
 int main() {
     char buffer[1024];
     int s;
 	int closing_descriptor = false;
-
-	memset(map, 0, sizeof(map));
 
     s = socket(AF_INET, SOCK_STREAM, 0);
     if (s == -1) {
@@ -101,35 +114,40 @@ int main() {
     }
 
 	printf("Waiting connections at port %d...\n", SERVER_PORT);
-    int new_s = accept(s, NULL, NULL);
 
-    if (new_s == -1) {
-        if (errno != EWOULDBLOCK) {
-            perror("accept() failed");
-			close(s);
-			exit(-1);
-        }
-	}
+	while (true) {
+	    int new_s = accept(s, NULL, NULL);
 
-	if (send_handshake(new_s)) {
-		while (true) {
-            memset(buffer, 0, sizeof(buffer));
-            int bytes = recv(new_s, buffer, sizeof(buffer), 0);
-            if (bytes == -1) {
-                if (errno != EWOULDBLOCK) {
-                    perror("recv() failed");
-                    close(new_s);
-                }
-
-				break;
-            }
-
-			closing_descriptor = !process_recv(buffer, new_s);
-
-			if (closing_descriptor) {
-				close(new_s);
-				break;
+	    if (new_s == -1) {
+	        if (errno != EWOULDBLOCK) {
+	            perror("accept() failed");
+				close(s);
+				exit(-1);
 	        }
+		}
+
+		reset_map();
+		if (send_handshake(new_s)) {
+			while (true) {
+	            memset(buffer, 0, sizeof(buffer));
+	            int bytes = recv(new_s, buffer, sizeof(buffer), 0);
+	            if (bytes == -1) {
+	                if (errno != EWOULDBLOCK) {
+	                    perror("recv() failed");
+	                    close(new_s);
+	                }
+
+					break;
+	            }
+
+				closing_descriptor = !process_recv(buffer, new_s);
+
+				if (closing_descriptor) {
+					break;
+		        }
+			}
+
+			close(new_s);
 		}
     }
 
