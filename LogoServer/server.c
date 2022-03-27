@@ -10,7 +10,7 @@
 #include <unistd.h>
 #include <errno.h>
 
-#define SERVER_PORT 8129
+#define SERVER_PORT 8124
 #define STDIN 0
 #define TIMEOUT 15
 
