@@ -13,9 +13,13 @@
 #define SERVER_PORT 8124
 #define STDIN 0
 #define TIMEOUT 15
+#define HEIGHT 30
+#define WIDTH 30
 
 static int _x = 15, _y = 15;
 static char _map[30][30];
+static char *_header = "╔══════════════════════════════╗\r\n";
+static char *_footer = "╚══════════════════════════════╝\r\n\r\n";
 
 bool send_handshake(int s) {
     char *handshake_message = "hello\r\n";
@@ -28,11 +32,42 @@ bool send_handshake(int s) {
 	return true;
 }
 
-void build_coordinates(char *response) {
+bool build_coordinates(int s) {
 	char buffer[1024];
 	snprintf(buffer, sizeof(buffer), "(%d,%d)\r\n", _x, _y);
 
-	strcat(response, buffer);
+	if (send(s, buffer, strlen(buffer), 0) == -1) {
+		perror("send() failed");
+		return false;
+	}
+
+	return true;
+}
+
+bool renderize(int s) {
+	char buffer[2048];
+
+	memset(buffer, 0, sizeof(buffer));
+	memcpy(buffer, _header, 32 * 3 + 2);  // 98
+	for (int i = 0; i < HEIGHT; i++) {
+		char line[256];
+		memset(line, 0, sizeof(line));
+		memcpy(line, "║", 3);          //  3
+		memcpy(&line[3], _map[i], 30); // 33
+		memcpy(&line[33], "║", 3);     // 36
+		memcpy(&line[36], "\r\n", 2);  // 38
+
+		memcpy(&buffer[98 + (38 * i)], line, 38);
+	}
+
+	memcpy(&buffer[1238], _footer, 32 * 3 + 4);
+
+	if (send(s, buffer, 1338, 0) == -1) {
+		perror("send() failed");
+		return false;
+	}
+
+	return true;
 }
 
 bool process_recv(char *buffer, int s) {
@@ -41,9 +76,7 @@ bool process_recv(char *buffer, int s) {
 	int length = strlen(buffer);
 	int index = 0;
 	bool must_quit = false;
-	char response[10240];
 
-	memset(response, 0, sizeof(response));
 	while (index < length) {
 		if (buffer[index] == ' ') {
 			index++;
@@ -56,7 +89,10 @@ bool process_recv(char *buffer, int s) {
 		}
 
 		if (strncmp(&buffer[index], "coord", 5) == 0) {
-			build_coordinates(response);
+			if (! build_coordinates(s)) {
+				return false;
+			}
+
 			index += 5;
 			continue;
 		}
@@ -66,14 +102,18 @@ bool process_recv(char *buffer, int s) {
 			break;
 		}
 
+		if (strncmp(&buffer[index], "render", 6) == 0) {
+			if (! renderize(s)) {
+				return false;
+			}
+
+			index += 6;
+			continue;
+		}
+
 		while (index < length && buffer[index] != '\r') {
 			index++;
 		}
-	}
-
-	if (send(s, response, strlen(response), 0) == -1) {
-		perror("send() failed");
-		return false;
 	}
 
 	return !must_quit;
@@ -81,7 +121,10 @@ bool process_recv(char *buffer, int s) {
 
 static void reset_map() {
 	_x = _y = 15;
-	memset(_map, 0, sizeof(_map));
+
+	for (int y = 0; y < HEIGHT; y++)
+		for (int x = 0; x < WIDTH; x++)
+			_map[y][x] = (x == _x && y == _y)? ' ' : ' ';
 }
 
 int main() {
