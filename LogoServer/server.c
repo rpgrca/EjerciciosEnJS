@@ -19,9 +19,13 @@
 
 enum Movement {
 	Top,
+	TopRight,
 	Right,
+	BottomRight,
 	Bottom,
-	Left
+	BottomLeft,
+	Left,
+	TopLeft
 };
 
 enum Mode {
@@ -100,11 +104,19 @@ void step(int steps) {
 	for (int i = 0; i < steps; i++) {
 		switch (_direction) {
 			case Top: if (_y > 0) move_to(_x, _y - 1); break;
+			case TopRight: if (_y > 0 && _x < WIDTH - 1) move_to(_x + 1, _y - 1); break;
 			case Right: if (_x < WIDTH - 1) move_to(_x + 1, _y); break;
+			case BottomRight: if (_y < HEIGHT - 1 && _x < WIDTH - 1) move_to(_x + 1, _y + 1); break;
 			case Bottom: if (_y < HEIGHT - 1) move_to(_x, _y + 1); break;
+			case BottomLeft: if (_x > 0 && _y < HEIGHT - 1) move_to(_x - 1, _y + 1); break;
 			case Left: if (_x > 0) move_to(_x - 1, _y); break;
+			case TopLeft: if (_x > 0 && _y > 0) move_to(_x - 1, _y - 1); break;
 		}
 	}
+}
+
+void right(int steps) {
+	_direction = (_direction + steps) % 8;
 }
 
 bool process_recv(char *buffer, int s) {
@@ -139,6 +151,8 @@ bool process_recv(char *buffer, int s) {
 			break;
 		}
 
+
+
 		if (strncmp(&buffer[index], "render", 6) == 0) {
 			if (! renderize(s)) {
 				return false;
@@ -152,7 +166,34 @@ bool process_recv(char *buffer, int s) {
 			int n = atoi(&buffer[index + 6]);
 			step(n);
 
-			/* consume til enter */
+			while (index < length && buffer[index] != '\r') {
+				index++;
+			}
+
+			continue;
+		}
+
+		if (strncmp(&buffer[index], "right", 5) == 0) {
+			int n = atoi(&buffer[index + 6]);
+			if (n == 0) n = 1;
+			right(n);
+
+			while (index < length && buffer[index] != '\r') {
+				index++;
+			}
+
+			continue;
+		}
+
+		if (strncmp(&buffer[index], "left ", 5) == 0) {
+			int n = atoi(&buffer[index + 5]);
+			right(8 - n);
+
+			while (index < length && buffer[index] != '\r') {
+				index++;
+			}
+
+			continue;
 		}
 
 		while (index < length && buffer[index] != '\r') {
