@@ -206,6 +206,8 @@ bool process_recv(char *buffer, int s) {
 
 static void reset_map() {
 	_x = _y = 15;
+	_mode = Draw;
+	_direction = Top;
 
 	for (int y = 0; y < HEIGHT; y++)
 		for (int x = 0; x < WIDTH; x++)
