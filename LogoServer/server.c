@@ -41,7 +41,7 @@ static char *_footer = "╚═════════════════�
 static enum Movement _direction = Top;
 static enum Mode _mode = Draw;
 
-#define HEADER_SIZE ((32 * 3) + 2)
+#define HEADER_SIZE ((32 * 3) + 2) /* every unicode char is 3 bytes */
 #define FOOTER_SIZE ((32 * 3) + 4)
 
 static bool try_send(int s, char *buffer, size_t length) {
@@ -54,7 +54,7 @@ static bool try_send(int s, char *buffer, size_t length) {
 }
 
 bool send_handshake(int s) {
-    char *handshake_message = "hello\r\n";
+	char *handshake_message = "hello\r\n";
 
 	return try_send(s, handshake_message, strlen(handshake_message));
 }
@@ -93,7 +93,7 @@ static void move_to(int new_x, int new_y) {
 	switch (_mode) {
 		case Draw: _map[_y][_x] = '*'; break;
 		case Eraser: _map[_y][_x] = ' '; break;
-		case Hover: /* just move */ break;
+		case Hover: /* nothing, just move */ break;
 	}
 
 	_x = new_x;
@@ -235,6 +235,7 @@ static bool process_message(char *buffer, int s) {
 				break;
 		}
 
+		/* invalid command, discard */
 		while (index < length && buffer[index] != '\r')
 			index++;
 	}
@@ -243,25 +244,25 @@ static bool process_message(char *buffer, int s) {
 }
 
 static bool bind_socket_to_ip(int s) {
-    struct sockaddr_in addr;
+	struct sockaddr_in addr;
 
-    memset(&addr, 0, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = INADDR_ANY;
-    addr.sin_port = htons(SERVER_PORT);
+	memset(&addr, 0, sizeof(addr));
+	addr.sin_family = AF_INET;
+	addr.sin_addr.s_addr = INADDR_ANY;
+	addr.sin_port = htons(SERVER_PORT);
 
-    return bind(s, (struct sockaddr *)&addr, sizeof(addr)) != -1;
+	return bind(s, (struct sockaddr *)&addr, sizeof(addr)) != -1;
 }
 
 int main() {
-    char buffer[1024];
-    int s;
+	char buffer[1024];
+	int s;
 
-    s = socket(AF_INET, SOCK_STREAM, 0);
-    if (s == -1) {
-        perror("socket() failed");
-        exit(-1);
-    }
+	s = socket(AF_INET, SOCK_STREAM, 0);
+	if (s == -1) {
+		perror("socket() failed");
+		exit(-1);
+	}
 
 	if (! bind_socket_to_ip(s)) {
 		perror("bind() failed");
@@ -269,18 +270,18 @@ int main() {
 		exit (-1);
 	}
 
-    if (listen(s, 5) == -1) {
-        perror("listen() failed");
-        close(s);
-        exit(-1);
-    }
+	if (listen(s, 5) == -1) {
+		perror("listen() failed");
+		close(s);
+		exit(-1);
+	}
 
 	printf("Waiting connections at port %d...\n", SERVER_PORT);
 	while (true) {
-	    int new_s = accept(s, NULL, NULL);
+		int new_s = accept(s, NULL, NULL);
 
-	    if (new_s == -1) {
-            perror("accept() failed");
+		if (new_s == -1) {
+			perror("accept() failed");
 			close(s);
 			exit(-1);
 		}
@@ -290,14 +291,14 @@ int main() {
 
 		if (send_handshake(new_s)) {
 			while (true) {
-	            memset(buffer, 0, sizeof(buffer));
-	            int bytes = recv(new_s, buffer, sizeof(buffer), 0);
-	            if (bytes == -1) {
+				memset(buffer, 0, sizeof(buffer));
+				int bytes = recv(new_s, buffer, sizeof(buffer), 0);
+				if (bytes == -1) {
 					perror("recv() failed");
-	                close(new_s);
+					close(new_s);
 
 					break;
-	            }
+				}
 
 				if (! process_message(buffer, new_s))
 					break;
