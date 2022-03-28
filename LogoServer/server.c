@@ -123,16 +123,10 @@ void right(int steps) {
 bool process_recv(char *buffer, int s) {
 	int length = strlen(buffer);
 	int index = 0;
-	bool must_quit = false;
 
 	while (index < length) {
-		if (buffer[index] == ' ') {
+		if (buffer[index] == ' ' || buffer[index] == '\r' || buffer[index] == '\n') {
 			index++;
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "\r\n", 2) == 0) {
-			index += 2;
 			continue;
 		}
 
@@ -145,12 +139,8 @@ bool process_recv(char *buffer, int s) {
 			continue;
 		}
 
-		if (strncmp(&buffer[index], "quit", 4) == 0) {
-			must_quit = true;
-			break;
-		}
-
-
+		if (strncmp(&buffer[index], "quit", 4) == 0)
+			return false;
 
 		if (strncmp(&buffer[index], "render", 6) == 0) {
 			if (! renderize(s)) {
@@ -165,6 +155,7 @@ bool process_recv(char *buffer, int s) {
 			int n = atoi(&buffer[index + 6]);
 			step(n);
 
+			index += 6;
 			while (index < length && buffer[index] != '\r') {
 				index++;
 			}
@@ -177,6 +168,7 @@ bool process_recv(char *buffer, int s) {
 			if (n == 0) n = 1;
 			right(n);
 
+			index += 5;
 			while (index < length && buffer[index] != '\r') {
 				index++;
 			}
@@ -189,6 +181,7 @@ bool process_recv(char *buffer, int s) {
 			if (n == 0) n = 1;
 			right(8 - n);
 
+			index += 4;
 			while (index < length && buffer[index] != '\r') {
 				index++;
 			}
@@ -213,7 +206,7 @@ bool process_recv(char *buffer, int s) {
 		}
 	}
 
-	return !must_quit;
+	return true;
 }
 
 static void reset_map() {
