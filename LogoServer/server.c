@@ -306,7 +306,11 @@ int main() {
 
 			close(new_s);
 		}
-    }
+	}
 
 	close(s);
 }
+
+/*
+vim:ts=4:noet:noai:nowrap
+*/
