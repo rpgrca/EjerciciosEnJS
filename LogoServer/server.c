@@ -116,11 +116,24 @@ void step(int steps) {
 	}
 }
 
-void right(int steps) {
+static void right(int steps) {
 	_direction = (_direction + steps) % 8;
 }
 
-bool process_recv(char *buffer, int s) {
+
+static void reset_mode() {
+	_x = _y = 15;
+	_mode = Draw;
+	_direction = Top;
+}
+
+static void reset_map() {
+	for (int y = 0; y < HEIGHT; y++)
+		for (int x = 0; x < WIDTH; x++)
+			_map[y][x] = ' ';
+}
+
+static bool process_message(char *buffer, int s) {
 	int length = strlen(buffer);
 	int index = 0;
 
@@ -139,12 +152,26 @@ bool process_recv(char *buffer, int s) {
 					index += 5;
 					continue;
 				}
+				else
+					if (strncmp(&buffer[index], "clear", 5) == 0) {
+						reset_map();
+						index += 5;
+						continue;
+					}
 				break;
 
 			case 'd':
 				if (strncmp(&buffer[index], "draw", 4) == 0) {
 					_mode = Draw;
 					index += 4;
+					continue;
+				}
+				break;
+
+			case 'e':
+				if (strncmp(&buffer[index], "eraser", 6) == 0) {
+					_mode = Eraser;
+					index += 6;
 					continue;
 				}
 				break;
@@ -219,16 +246,6 @@ bool process_recv(char *buffer, int s) {
 	return true;
 }
 
-static void reset_map() {
-	_x = _y = 15;
-	_mode = Draw;
-	_direction = Top;
-
-	for (int y = 0; y < HEIGHT; y++)
-		for (int x = 0; x < WIDTH; x++)
-			_map[y][x] = (x == _x && y == _y)? ' ' : ' ';
-}
-
 int main() {
     char buffer[1024];
     int s;
@@ -272,6 +289,7 @@ int main() {
 		}
 
 		reset_map();
+		reset_mode();
 		if (send_handshake(new_s)) {
 			while (true) {
 	            memset(buffer, 0, sizeof(buffer));
@@ -285,7 +303,7 @@ int main() {
 					break;
 	            }
 
-				closing_descriptor = !process_recv(buffer, new_s);
+				closing_descriptor = !process_message(buffer, new_s);
 
 				if (closing_descriptor) {
 					break;
