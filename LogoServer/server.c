@@ -130,80 +130,90 @@ bool process_recv(char *buffer, int s) {
 			continue;
 		}
 
-		if (strncmp(&buffer[index], "coord", 5) == 0) {
-			if (! build_coordinates(s)) {
-				return false;
-			}
+		switch (buffer[index]) {
+			case 'c':
+				if (strncmp(&buffer[index], "coord", 5) == 0) {
+					if (! build_coordinates(s))
+						return false;
 
-			index += 5;
-			continue;
+					index += 5;
+					continue;
+				}
+				break;
+
+			case 'd':
+				if (strncmp(&buffer[index], "draw", 4) == 0) {
+					_mode = Draw;
+					index += 4;
+					continue;
+				}
+				break;
+
+			case 'h':
+				if (strncmp(&buffer[index], "hover", 5) == 0) {
+					_mode = Hover;
+					index += 5;
+					continue;
+				}
+				break;
+
+			case 'l':
+				if (strncmp(&buffer[index], "left", 4) == 0) {
+					int n = atoi(&buffer[index + 4]);
+					if (n == 0) n = 1;
+					right(8 - n);
+
+					index += 4;
+					while (index < length && buffer[index] != '\r')
+						index++;
+
+					continue;
+				}
+				break;
+
+			case 'q':
+				if (strncmp(&buffer[index], "quit", 4) == 0)
+					return false;
+				break;
+
+			case 'r':
+				if (strncmp(&buffer[index], "render", 6) == 0) {
+					if (! renderize(s))
+						return false;
+
+					index += 6;
+					continue;
+				}
+				else
+					if (strncmp(&buffer[index], "right", 5) == 0) {
+						int n = atoi(&buffer[index + 6]);
+						if (n == 0) n = 1;
+						right(n);
+
+						index += 5;
+						while (index < length && buffer[index] != '\r')
+							index++;
+
+						continue;
+					}
+				break;
+
+			case 's':
+				if (strncmp(&buffer[index], "steps ", 6) == 0) {
+					int n = atoi(&buffer[index + 6]);
+					step(n);
+
+					index += 6;
+					while (index < length && buffer[index] != '\r')
+						index++;
+
+					continue;
+				}
+				break;
 		}
 
-		if (strncmp(&buffer[index], "quit", 4) == 0)
-			return false;
-
-		if (strncmp(&buffer[index], "render", 6) == 0) {
-			if (! renderize(s)) {
-				return false;
-			}
-
-			index += 6;
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "steps ", 6) == 0) {
-			int n = atoi(&buffer[index + 6]);
-			step(n);
-
-			index += 6;
-			while (index < length && buffer[index] != '\r') {
-				index++;
-			}
-
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "right", 5) == 0) {
-			int n = atoi(&buffer[index + 6]);
-			if (n == 0) n = 1;
-			right(n);
-
-			index += 5;
-			while (index < length && buffer[index] != '\r') {
-				index++;
-			}
-
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "left", 4) == 0) {
-			int n = atoi(&buffer[index + 4]);
-			if (n == 0) n = 1;
-			right(8 - n);
-
-			index += 4;
-			while (index < length && buffer[index] != '\r') {
-				index++;
-			}
-
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "hover", 5) == 0) {
-			_mode = Hover;
-			index += 5;
-			continue;
-		}
-
-		if (strncmp(&buffer[index], "draw", 4) == 0) {
-			_mode = Draw;
-			index += 4;
-			continue;
-		}
-
-		while (index < length && buffer[index] != '\r') {
+		while (index < length && buffer[index] != '\r')
 			index++;
-		}
 	}
 
 	return true;
