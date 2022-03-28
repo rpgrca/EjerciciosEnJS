@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 #include <netinet/in.h>
 #include <sys/types.h>
 #include <sys/time.h>
@@ -16,10 +17,25 @@
 #define HEIGHT 30
 #define WIDTH 30
 
+enum Movement {
+	Top,
+	Right,
+	Bottom,
+	Left
+};
+
+enum Mode {
+	Hover,
+	Draw,
+	Eraser
+};
+
 static int _x = 15, _y = 15;
 static char _map[30][30];
 static char *_header = "╔══════════════════════════════╗\r\n";
 static char *_footer = "╚══════════════════════════════╝\r\n\r\n";
+static enum Movement _direction = Top;
+static enum Mode _mode = Draw;
 
 bool send_handshake(int s) {
     char *handshake_message = "hello\r\n";
@@ -70,6 +86,27 @@ bool renderize(int s) {
 	return true;
 }
 
+void move_to(int new_x, int new_y) {
+	switch (_mode) {
+		case Draw: _map[_y][_x] = '*'; break;
+		case Eraser: _map[_y][_x] = ' '; break;
+	}
+
+	_x = new_x;
+	_y = new_y;
+}
+
+void step(int steps) {
+	for (int i = 0; i < steps; i++) {
+		switch (_direction) {
+			case Top: if (_y > 0) move_to(_x, _y - 1); break;
+			case Right: if (_x < WIDTH - 1) move_to(_x + 1, _y); break;
+			case Bottom: if (_y < HEIGHT - 1) move_to(_x, _y + 1); break;
+			case Left: if (_x > 0) move_to(_x - 1, _y); break;
+		}
+	}
+}
+
 bool process_recv(char *buffer, int s) {
 	printf("Received \"%s\"\n", buffer);
 
@@ -109,6 +146,13 @@ bool process_recv(char *buffer, int s) {
 
 			index += 6;
 			continue;
+		}
+
+		if (strncmp(&buffer[index], "steps ", 6) == 0) {
+			int n = atoi(&buffer[index + 6]);
+			step(n);
+
+			/* consume til enter */
 		}
 
 		while (index < length && buffer[index] != '\r') {
