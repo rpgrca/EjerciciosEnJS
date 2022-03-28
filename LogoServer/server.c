@@ -94,6 +94,7 @@ void move_to(int new_x, int new_y) {
 	switch (_mode) {
 		case Draw: _map[_y][_x] = '*'; break;
 		case Eraser: _map[_y][_x] = ' '; break;
+		case Hover: break;
 	}
 
 	_x = new_x;
@@ -120,8 +121,6 @@ void right(int steps) {
 }
 
 bool process_recv(char *buffer, int s) {
-	printf("Received \"%s\"\n", buffer);
-
 	int length = strlen(buffer);
 	int index = 0;
 	bool must_quit = false;
@@ -185,14 +184,27 @@ bool process_recv(char *buffer, int s) {
 			continue;
 		}
 
-		if (strncmp(&buffer[index], "left ", 5) == 0) {
-			int n = atoi(&buffer[index + 5]);
+		if (strncmp(&buffer[index], "left", 4) == 0) {
+			int n = atoi(&buffer[index + 4]);
+			if (n == 0) n = 1;
 			right(8 - n);
 
 			while (index < length && buffer[index] != '\r') {
 				index++;
 			}
 
+			continue;
+		}
+
+		if (strncmp(&buffer[index], "hover", 5) == 0) {
+			_mode = Hover;
+			index += 5;
+			continue;
+		}
+
+		if (strncmp(&buffer[index], "draw", 4) == 0) {
+			_mode = Draw;
+			index += 4;
 			continue;
 		}
 
