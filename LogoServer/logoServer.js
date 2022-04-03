@@ -8,10 +8,25 @@ class LogoScreen {
         this._y = 15;
         this._height = 30;
         this._width = 30;
+        this._screen = [];
+
+        this.createScreen(); 
     }
 
-    coord() {
-        return `(${this._x},${this._y})`;
+    coord = () => `(${this._x},${this._y})`;
+    
+    createScreen = () => {
+        for (let i = 0; i < 30; i++)
+        {
+            this._screen.push(" ".repeat(30));
+        }
+    }
+
+    render = () => {
+        let renderization = this._screen.reduce((t, i) => `${t}\r\n║${i}║`, "╔══════════════════════════════╗");
+        renderization += "\r\n╚══════════════════════════════╝\r\n";
+
+        return renderization;
     }
 }
 
@@ -48,7 +63,8 @@ class LogoServer {
         {
             switch (msg)
             {
-                case "coord": this.enqueueReply("(15,15)"); break;
+                case "coord": this.enqueueReply(this._logo.coord()); break;
+                case "render": this.enqueueReply(this._logo.render()); break;
                 case "quit": this.quit(); break;
             }
         }
