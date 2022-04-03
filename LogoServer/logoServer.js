@@ -18,22 +18,32 @@ class LogoScreen {
     createScreen = () => {
         for (let i = 0; i < 30; i++)
         {
-            this._screen.push(" ".repeat(30));
+            this._screen.push(" ".repeat(30).split(""));
         }
     }
 
-    render = () => {
-        let renderization = this._screen.reduce((t, i) => `${t}\r\n║${i}║`, "╔══════════════════════════════╗");
-        renderization += "\r\n╚══════════════════════════════╝\r\n";
+    render = () =>
+        this._screen
+            .reduce((t, i) => `${t}\r\n║${i.join('')}║`, "╔══════════════════════════════╗") +
+            "\r\n╚══════════════════════════════╝\r\n";
 
-        return renderization;
+    steps = s => {
+        console.log(s);
+        if (typeof s == undefined) s = 1;
+
+        for (let i = 0; i < s; i++) {
+            this._screen[this._y][this._x] = "*";
+
+            if (this._y > 1) {
+                this._y--;
+            }
+        };
     }
 }
 
 class LogoServer {
     constructor(port) {
         this._port = port;
-        this._logo = new LogoScreen();
         this._messages = [];
         this._quitting = false;
     }
@@ -42,6 +52,7 @@ class LogoServer {
         this.enqueueReply("hello");
         this.sendReply(s);
         this._quitting = false;
+        this._logo = new LogoScreen();
     }
 
     clearReplies = () => this._messages = [];
@@ -61,15 +72,17 @@ class LogoServer {
     processMessage = d => {
         for (let msg of d.split("\r\n").map(x => x.trim()))
         {
-            switch (msg)
+            let msgItems = msg.split(" ");
+            switch (msgItems[0])
             {
                 case "coord": this.enqueueReply(this._logo.coord()); break;
                 case "render": this.enqueueReply(this._logo.render()); break;
+                case "steps": this._logo.steps(msgItems[1]); break;
                 case "quit": this.quit(); break;
             }
         }
     }
-
+ 
     run() {
         var server = net.createServer(s =>
         {
