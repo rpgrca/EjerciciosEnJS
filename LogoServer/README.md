@@ -6,7 +6,7 @@ This purpose of this test is to build a TCP server implementing a simple protoco
 
 [Read all](https://frontapp.github.io/front-backend-exercise/2019-06-14-dbd77b/)
 
-### Instructions
+### Instructions for C server
 
 Simple approach in plain C. Working with unicode characters is painful as the few string functions available only work with ASCII so had to revert working with bytes instead making the render method hard to understand.
 
@@ -19,3 +19,12 @@ Waiting connections at port 8124...
 ```
 
 Then run tests from another console with *npm test*.
+
+### Instructions for node server
+
+```
+# npm install
+# node logoServer.js
+```
+
+Then run tests from another console with *npm test*
