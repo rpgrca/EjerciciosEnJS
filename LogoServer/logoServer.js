@@ -1,4 +1,3 @@
-const async = require('async');
 const net = require('net');
 
 const Draw = 0;
@@ -13,20 +12,20 @@ class LogoScreen {
         this._height = 30;
         this._width = 30;
         this._screen = [];
-        this._direction = +0;
+        this._direction = 0;
         this._mode = Draw;
 
         this.createScreen(); 
     }
 
-    coord = () => `(${this._x},${this._y})`;
-    
     createScreen = () => {
         for (let i = 0; i < 30; i++)
         {
             this._screen.push(" ".repeat(30).split(""));
         }
     }
+
+    coord = () => `(${this._x},${this._y})`;
 
     render = () =>
         this._screen
@@ -109,17 +108,11 @@ class LogoScreen {
     changeMode = m => this._mode = m;
 }
 
-class LogoServer {
-    constructor(port) {
-        this._port = port;
+class LogoThread {
+    constructor(socket) {
+        this._socket = socket;
+        this._quitting = false;
         this._messages = [];
-        this._quitting = false;
-    }
-
-    sendHandshakeThrough = s => {
-        this.enqueueReply("hello");
-        this.sendReply(s);
-        this._quitting = false;
         this._logo = new LogoScreen();
     }
 
@@ -140,9 +133,7 @@ class LogoServer {
     processMessage = d => {
         for (let msg of d.split("\r\n").map(x => x.trim()))
         {
-            console.log(msg);
             let msgItems = msg.split(" ");
-
             switch (msgItems[0])
             {
                 case "coord": this.enqueueReply(this._logo.coord()); break;
@@ -158,16 +149,27 @@ class LogoServer {
         }
     }
  
+    run(data) {
+        this.processMessage(data.toString());
+        this.sendReply(this._socket);
+        if (this._quitting) this._socket.end();
+    }
+}
+
+class LogoServer {
+    constructor(port) {
+        this._port = port;
+    }
+
+    sendHandshakeThrough = s => s.write("hello\r\n");
+
     run() {
-        var server = net.createServer(s =>
+        net.createServer(s =>
         {
             this.sendHandshakeThrough(s);
 
             s.on('data', d => {
-                this.processMessage(d.toString());
-                this.sendReply(s);
-
-                if (this._quitting) s.end();
+                new LogoThread(s).run(d);
             });
 
             s.on('error', e => console.log(e));
@@ -175,5 +177,5 @@ class LogoServer {
     }
 }
 
-const server = new LogoServer(8124);
+let server = new LogoServer(8124);
 server.run();
