@@ -9,6 +9,7 @@ class LogoScreen {
         this._height = 30;
         this._width = 30;
         this._screen = [];
+        this._direction = +0;
 
         this.createScreen(); 
     }
@@ -28,16 +29,58 @@ class LogoScreen {
             "\r\n╚══════════════════════════════╝\r\n";
 
     steps = s => {
-        console.log(s);
-        if (typeof s == undefined) s = 1;
+        s = (s === undefined)? 1 : parseInt(s);
 
         for (let i = 0; i < s; i++) {
             this._screen[this._y][this._x] = "*";
 
-            if (this._y > 1) {
-                this._y--;
+            switch (this._direction)
+            {
+                case 0:
+                    if (this._y > 1) this._y--;
+                    break;
+                case 1:
+                    if (this._x < 29 && this._y > 1) {
+                        this._y--;
+                        this._x++;
+                    }
+                    break;
+                case 2:
+                    if (this._x < 29) this._x++;
+                    break;
+                case 3:
+                    if (this._x < 29 && this._y < 29) {
+                        this._x++;
+                        this._y++;
+                    }
+                    break;
+                case 4:
+                    if (this._y < 29) this._y++;
+                    break;
+                case 5:
+                    if (this._x > 1 && this._y < 29) {
+                        this._x--;
+                        this._y++;
+                    }
+                    break;
+                case 6:
+                    if (this._x > 1) this._x--;
+                    break;
+                case 7:
+                    if (this._x > 1 && this._y > 1) {
+                        this._x--;
+                        this._y--;
+                    }
+                    break;
             }
         };
+    }
+
+    right = r => {
+        r = (r === undefined)? 1 : parseInt(r);
+
+        if (! Number.isNaN(r))
+            this._direction = (this._direction + r) % 8;
     }
 }
 
@@ -73,11 +116,13 @@ class LogoServer {
         for (let msg of d.split("\r\n").map(x => x.trim()))
         {
             let msgItems = msg.split(" ");
+
             switch (msgItems[0])
             {
                 case "coord": this.enqueueReply(this._logo.coord()); break;
                 case "render": this.enqueueReply(this._logo.render()); break;
                 case "steps": this._logo.steps(msgItems[1]); break;
+                case "right": this._logo.right(msgItems[1]); break;
                 case "quit": this.quit(); break;
             }
         }
