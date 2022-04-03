@@ -12,8 +12,6 @@
 #include <errno.h>
 
 #define SERVER_PORT 8124
-#define STDIN 0
-#define TIMEOUT 15
 #define HEIGHT 30
 #define WIDTH 30
 
