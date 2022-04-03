@@ -1,6 +1,10 @@
 const async = require('async');
 const net = require('net');
 
+const Draw = 0;
+const Hover = 1;
+const Eraser = 2;
+
 class LogoScreen {
     constructor()
     {
@@ -10,6 +14,7 @@ class LogoScreen {
         this._width = 30;
         this._screen = [];
         this._direction = +0;
+        this._mode = Draw;
 
         this.createScreen(); 
     }
@@ -32,7 +37,18 @@ class LogoScreen {
         s = (s === undefined)? 1 : parseInt(s);
 
         for (let i = 0; i < s; i++) {
-            this._screen[this._y][this._x] = "*";
+            switch (this._mode) {
+                case Draw: 
+                    this._screen[this._y][this._x] = "*";
+                    break;
+
+                case Eraser:
+                    this._screen[this._y][this._x] = " ";
+                    break;
+
+                case Hover:
+                    break;
+            }
 
             switch (this._direction)
             {
@@ -82,6 +98,15 @@ class LogoScreen {
         if (! Number.isNaN(r))
             this._direction = (this._direction + r) % 8;
     }
+
+    left = l => {
+        l = (l === undefined)? 1 : parseInt(l);
+
+        if (! Number.isNaN(l))
+            this.right(8 - l);
+    }
+
+    changeMode = m => this._mode = m;
 }
 
 class LogoServer {
@@ -115,6 +140,7 @@ class LogoServer {
     processMessage = d => {
         for (let msg of d.split("\r\n").map(x => x.trim()))
         {
+            console.log(msg);
             let msgItems = msg.split(" ");
 
             switch (msgItems[0])
@@ -123,6 +149,10 @@ class LogoServer {
                 case "render": this.enqueueReply(this._logo.render()); break;
                 case "steps": this._logo.steps(msgItems[1]); break;
                 case "right": this._logo.right(msgItems[1]); break;
+                case "left": this._logo.left(msgItems[1]); break;
+                case "draw": this._logo.changeMode(Draw); break;
+                case "hover": this._logo.changeMode(Hover); break;
+                case "eraser": this._logo.changeMode(Eraser); break;
                 case "quit": this.quit(); break;
             }
         }
