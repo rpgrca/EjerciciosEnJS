@@ -257,6 +257,39 @@ static bool bind_socket_to_ip(int s) {
 	return bind(s, (struct sockaddr *)&addr, sizeof(addr)) != -1;
 }
 
+static void shutdown_and_exit(int s) {
+	if (s != -1)
+	{
+		close(s);
+	}
+
+#if _WIN32
+	WSACleanup();
+#endif
+
+	exit(-1);
+}
+
+static bool receive_message(char *buffer, size_t length, int s) {
+	int index = 0;
+	bool reading = true;
+
+	while (reading) {
+		int bytes = recv(s, &buffer[index], length - index, 0);
+		if (bytes == -1) {
+			perror("recv() failed");
+			close(s);
+			return false;
+		}
+
+		index += bytes;
+		if (buffer[index - 1] == '\n')
+			reading = false;
+	}
+
+	return true;
+}
+
 int main() {
 	char buffer[1024];
 	int s;
@@ -272,19 +305,18 @@ int main() {
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s == -1) {
 		perror("socket() failed");
+		shutdown_and_exit(s);
 		exit(-1);
 	}
 
 	if (! bind_socket_to_ip(s)) {
 		perror("bind() failed");
-		close(s);
-		exit (-1);
+		shutdown_and_exit(s);
 	}
 
 	if (listen(s, 5) == -1) {
 		perror("listen() failed");
-		close(s);
-		exit(-1);
+		shutdown_and_exit(s);
 	}
 
 	printf("Waiting connections at port %d...\n", SERVER_PORT);
@@ -293,8 +325,7 @@ int main() {
 
 		if (new_s == -1) {
 			perror("accept() failed");
-			close(s);
-			exit(-1);
+			shutdown_and_exit(s);
 		}
 
 		reset_map();
@@ -303,11 +334,9 @@ int main() {
 		if (send_handshake(new_s)) {
 			while (true) {
 				memset(buffer, 0, sizeof(buffer));
-				int bytes = recv(new_s, buffer, sizeof(buffer), 0);
-				if (bytes == -1) {
-					perror("recv() failed");
+				if (!receive_message(buffer, sizeof(buffer), new_s))
+				{
 					close(new_s);
-
 					break;
 				}
 
@@ -320,10 +349,10 @@ int main() {
 	}
 
 	close(s);
-
-#ifdef _WIN32
+#if _WIN32
 	WSACleanup();
 #endif
+	exit(0);
 }
 
 /*
