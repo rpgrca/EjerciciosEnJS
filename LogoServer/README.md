@@ -10,11 +10,18 @@ This purpose of this test is to build a TCP server implementing a simple protoco
 
 Simple approach in plain C. Working with unicode characters is painful as the few string functions available only work with ASCII so had to revert working with bytes instead making the render method hard to understand.
 
-Compile with GCC (tried under Ubuntu).
+#### Compile with GCC (tried under Ubuntu).
 
 ```
 # gcc server.c -o server -Wall
 # ./server
+Waiting connections at port 8124...
+```
+
+#### Compile with GCC (tried under Windows).
+```
+C:\> gcc server.c -o server.exe -lWs2_32
+C:\> server.exe
 Waiting connections at port 8124...
 ```
 
