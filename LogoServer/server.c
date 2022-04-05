@@ -3,12 +3,17 @@
 #include <string.h>
 #include <stdbool.h>
 #include <ctype.h>
+#ifdef _WIN32
+#include <winsock.h>
+#define close closesocket
+#else
 #include <netinet/in.h>
-#include <sys/types.h>
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <sys/select.h>
 #include <unistd.h>
+#endif
+#include <sys/types.h>
 #include <errno.h>
 
 #define SERVER_PORT 8124
@@ -256,6 +261,14 @@ int main() {
 	char buffer[1024];
 	int s;
 
+#ifdef _WIN32
+	WSADATA wsaData = {0};
+    if (WSAStartup(MAKEWORD(2, 2), &wsaData) < 0) {
+		perror("WSAStartup() failed");
+		exit(-1);
+	}
+#endif
+
 	s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s == -1) {
 		perror("socket() failed");
@@ -307,6 +320,10 @@ int main() {
 	}
 
 	close(s);
+
+#ifdef _WIN32
+	WSACleanup();
+#endif
 }
 
 /*
