@@ -2,29 +2,36 @@ export const justificar = (input, longitud) => {
     if (longitud < 1) return [ input ]
 
     var lineas = input.split(' ').reduce(function(lineas, palabra) {
-        var texto_anterior = lineas[lineas.length - 1].join('')
-        var texto = texto_anterior
-        if (texto.length != 0) {
-            texto = texto.concat(" ")
+        var linea_actual = lineas[lineas.length - 1]
+
+
+
+        linea_actual.join('').length
+
+
+        var longitud_linea_actual = linea_actual.join('').length
+        var tamano_cadena = palabra.length
+
+        if (longitud_linea_actual > 0) {
+            tamano_cadena += longitud_linea_actual + 1
         }
 
-        texto = texto.concat(palabra)
-        if (texto.length <= longitud) {
-            if (lineas[lineas.length - 1].length != 0) {
-                lineas[lineas.length - 1] = [...lineas[lineas.length - 1], ' ', palabra]
-            }
-            else {
-                lineas[lineas.length - 1].push([palabra])
-            }
+        tamano_cadena
+
+
+
+
+        if (hay_lugar_en_la_linea(tamano_cadena, longitud)) {
+            agregar_palabra_a(linea_actual, palabra)
         }
         else {
             var index = 1
-            var espacio = longitud - texto_anterior.length
+            var espacio = longitud - longitud_linea_actual
             while (espacio-- > 0)
             {
-                lineas[lineas.length - 1][index] = lineas[lineas.length - 1][index].concat(' ')
+                linea_actual[index] += ' '
                 index += 2
-                if (index >= lineas[lineas.length - 1].length)
+                if (index >= linea_actual.length)
                 {
                     index = 1
                 }
@@ -36,5 +43,18 @@ export const justificar = (input, longitud) => {
         return lineas
     }, [[]])
 
-    return lineas.map((linea) => linea.join('').trim())
+    return generar_parrafo_justificado(lineas)
 }
+
+const generar_parrafo_justificado = (lineas) =>
+    lineas.map((linea) => linea.join(''))
+
+const agregar_palabra_a = (linea, palabra) => {
+    if (linea.length != 0)
+        linea.push(' ')
+
+    linea.push(palabra)
+}
+
+const hay_lugar_en_la_linea = (tamano_cadena, longitud) =>
+    tamano_cadena <= longitud
