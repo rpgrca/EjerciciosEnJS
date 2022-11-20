@@ -1,8 +1,32 @@
 version: 2
 updates:
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/Anaconda"
     schedule:
       interval: "weekly"
 
+  - package-ecosystem: "npm"
+    directory: "/Justificar"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/LogoServer"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/Ordenar"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/Palindromo"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "/SortingUniqueAnagrams"
+    schedule:
+      interval: "weekly"
 
