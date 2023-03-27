@@ -1,7 +1,7 @@
 {
   "name": "aparear",
   "version": "1.0.0",
-  "description": "## Descripción Tengo 2 vectores, uno con ids y otro con una estructura con ids y la posicion en la que debe estar al concatenarse con el primer vector.",
+  "description": "Tengo 2 vectores, uno con ids y otro con una estructura con ids y la posicion en la que debe estar al concatenarse con el primer vector.",
   "main": "index.js",
   "scripts": {
     "test": "jest"
