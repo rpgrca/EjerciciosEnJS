@@ -12,5 +12,15 @@
     "babel": "^6.23.0",
     "babel-jest": "^29.5.0",
     "jest": "^29.5.0"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "verbose": true,
+    "collectCoverageFrom": [
+      "*.{js,jsx}",
+      "!**/node_modules/**",
+      "!babel.config.js"
+    ]
   }
 }
