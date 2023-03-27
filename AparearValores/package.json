@@ -1,0 +1,16 @@
+{
+  "name": "aparear",
+  "version": "1.0.0",
+  "description": "## Descripción Tengo 2 vectores, uno con ids y otro con una estructura con ids y la posicion en la que debe estar al concatenarse con el primer vector.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel": "^6.23.0",
+    "babel-jest": "^29.5.0",
+    "jest": "^29.5.0"
+  }
+}
