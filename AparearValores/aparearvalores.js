@@ -6,7 +6,7 @@ export const aparear_valores = (vector_original, new_ids) => {
     var index_para_vector_original = 0
     var index_para_new_ids = 0
     var current_index = 0
-    var new_ids_ordenado = new_ids.sort(p => p.position)
+    var new_ids_ordenado = new_ids.sort((p, q) => p.position - q.position)
     var vector_modificado = []
 
     while (index_para_vector_original < vector_original.length && index_para_new_ids < new_ids.length) {
