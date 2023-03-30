@@ -10,13 +10,18 @@ export const aparear_valores = (vector_original, new_ids) => {
     var vector_modificado = []
 
     while (index_para_vector_original < vector_original.length && index_para_new_ids < new_ids.length) {
+
         if (current_index == new_ids_ordenado[index_para_new_ids].position) {
-            vector_modificado.push(new_ids_ordenado[index_para_new_ids++].id)
+            var valor_a_agregar = 0
+            do {
+                valor_a_agregar = new_ids_ordenado[index_para_new_ids++].id
+            } while (index_para_new_ids < new_ids.length && current_index == new_ids_ordenado[index_para_new_ids].position)
+
+            vector_modificado.push(valor_a_agregar)
         }
         else {
             vector_modificado.push(vector_original[index_para_vector_original++])
         }
-
         current_index++;
     }
 
