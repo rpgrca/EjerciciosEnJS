@@ -8,6 +8,13 @@ describe('Ejercicio de apareo de listas', () => {
         expect(resultado).toStrictEqual([])
     })
 
+    test('Test con datos pero sin nuevas posiciones', () => {
+        var vec_ids = [ 5, 7, 8, 15, 20, 25, 30, 35, 40 ]
+        var new_ids = []
+        var resultado = aparear_valores(vec_ids, new_ids)
+        expect(resultado).toStrictEqual([ 5, 7, 8, 15, 20, 25, 30, 35, 40 ])
+    })
+
     test('Test con una nueva posicion', () => {
         var vec_ids = [ 5, 7, 8, 15, 20, 25, 30, 35, 40 ]
         var new_ids = [{ "id": 9, position: "4" }]
