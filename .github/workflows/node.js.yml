@@ -32,22 +32,36 @@ jobs:
       run: |
            npm ci
            npm run build --if-present
-           npm test
+           npm test -- --coverage
 
     - name: Run CI for Palindromo
       working-directory: Palindromo
       run: |
            npm ci
            npm run build --if-present
-           npm test
+           npm test -- --coverage
 
     - name: Run CI for SortingUniqueAnagrams
       working-directory: SortingUniqueAnagrams
       run: |
            npm ci
            npm run build --if-present
-           npm test
+           npm test -- --coverage
 
-    - name: Upload code coverage
-      run: bash <(curl -s https://codecov.io/bash)
+    - name: Run CI for AparearValores
+      working-directory: AparearValores
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test -- --coverage
+
+    - name: Run CI for MalwareAnalysis
+      working-directory: MalwareAnalysis
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test -- --coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
 
