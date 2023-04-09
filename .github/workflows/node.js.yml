@@ -35,6 +35,13 @@ jobs:
            npm run build --if-present
            npm test -- --coverage
 
+    - name: Run CI for Justificar
+      working-directory: Justificar
+      run: |
+           npm ci
+           npm run build --if-present
+           npm test -- --coverage
+
     - name: Run CI for Palindromo
       working-directory: Palindromo
       run: |
