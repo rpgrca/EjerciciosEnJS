@@ -4,39 +4,46 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/Anaconda"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/Justificar"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/LogoServer"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/Ordenar"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/Palindromo"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/SortingUniqueAnagrams"
     schedule:
       interval: "weekly"
+      day: "friday"
 
   - package-ecosystem: "npm"
     directory: "/MalwareAnalysis"
     schedule:
       interval: "weekly"
-
+      day: "friday"
