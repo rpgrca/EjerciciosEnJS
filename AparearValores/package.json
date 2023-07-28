@@ -9,9 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "babel": "^6.23.0",
-    "babel-jest": "^29.5.0",
-    "jest": "^29.5.0"
+    "nodemon": "^3.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.21.4",
@@ -28,8 +26,5 @@
       "!**/node_modules/**",
       "!babel.config.js"
     ]
-  },
-  "dependencies": {
-    "nodemon": "^2.0.22"
   }
 }
