@@ -22,5 +22,8 @@
       "!**/node_modules/**",
       "!babel.config.js"
     ]
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.22.9"
   }
 }
