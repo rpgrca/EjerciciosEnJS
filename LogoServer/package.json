@@ -5,7 +5,7 @@
   "dependencies": {
     "async": "^3.2.4",
     "expect": "^29.3.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.13.6"
   },
   "devDependencies": {
     "mocha": "^10.1.0"
