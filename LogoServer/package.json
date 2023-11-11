@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "dependencies": {
-    "async": "^3.2.4",
+    "async": "^3.2.5",
     "expect": "^29.7.0",
     "underscore": "^1.13.6"
   },
