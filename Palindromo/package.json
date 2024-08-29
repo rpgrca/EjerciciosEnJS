@@ -24,6 +24,6 @@
     ]
   },
   "dependencies": {
-    "@babel/preset-env": "^7.25.3"
+    "@babel/preset-env": "^7.25.4"
   }
 }
