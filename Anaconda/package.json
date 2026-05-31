@@ -23,8 +23,5 @@
       "!**/node_modules/**",
       "!babel.config.js"
     ]
-  },
-  "overrides": {
-    "glob": "^10.5.0"
   }
 }
