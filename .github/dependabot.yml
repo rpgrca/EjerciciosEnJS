@@ -11,21 +11,33 @@ updates:
     schedule:
       interval: "weekly"
       day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
+
+  - package-ecosystem: "npm"
+    directory: "/AparearValores"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
 
   - package-ecosystem: "npm"
     directory: "/Justificar"
     schedule:
       interval: "weekly"
       day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
 
   - package-ecosystem: "npm"
     directory: "/LogoServer"
-    schedule:
-      interval: "weekly"
-      day: "friday"
-
-  - package-ecosystem: "npm"
-    directory: "/Ordenar"
     schedule:
       interval: "weekly"
       day: "friday"
@@ -35,15 +47,27 @@ updates:
     schedule:
       interval: "weekly"
       day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
 
   - package-ecosystem: "npm"
     directory: "/SortingUniqueAnagrams"
     schedule:
       interval: "weekly"
       day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
 
   - package-ecosystem: "npm"
     directory: "/MalwareAnalysis"
     schedule:
       interval: "weekly"
       day: "friday"
+    groups:
+      babel:
+        patterns:
+          - "@babel/*"
